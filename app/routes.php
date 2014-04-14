@@ -54,7 +54,7 @@ Route::get('/stop/{stop}', function($stop){
 				<Siri version="1.0" xmlns="http://www.siri.org.uk/">
 				<ServiceRequest>
 				<RequestTimestamp>' . $date . '</RequestTimestamp>
-				<RequestorRef>TravelineAPI180</RequestorRef>
+				<RequestorRef>' . Config::get('traveline.username') . '</RequestorRef>
 				<StopMonitoringRequest version="1.0">
 				<RequestTimestamp>' . $date . '</RequestTimestamp>
 				<MessageIdentifier>' . $id . '</MessageIdentifier>
