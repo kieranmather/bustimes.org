@@ -47,22 +47,33 @@ Route::get('/location/{lat}/{lon}', array('as' => 'location', function($lat, $lo
 }))->where('lon', '[0-9.-]+')->where('lat', '[0-9.-]+');
 Route::get('/stop/{stop}', function($stop){
 	$stopData = Stop::where('id', '=', $stop)->get();
-	$url = 'http://nextbus.mxdata.co.uk/nextbuses/1.0/1';
-	$date =  date("Y-m-d\TH:i:s\Z");
-	$id = rand(100000, 999999);
-	$request = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-				<Siri version="1.0" xmlns="http://www.siri.org.uk/">
-				<ServiceRequest>
-				<RequestTimestamp>' . $date . '</RequestTimestamp>
-				<RequestorRef>' . Config::get('traveline.username') . '</RequestorRef>
-				<StopMonitoringRequest version="1.0">
-				<RequestTimestamp>' . $date . '</RequestTimestamp>
-				<MessageIdentifier>' . $id . '</MessageIdentifier>
-				<MonitoringRef>' . $stop . '</MonitoringRef>
-				</StopMonitoringRequest>
-				</ServiceRequest>
-				</Siri>';
-	$response = Httpful::post($url)->body($request)->authenticateWith(Config::get('traveline.username'), Config::get('traveline.password'))->sendsXml()->expectsXml()->send();
-	$timetable = $response->body->ServiceDelivery->StopMonitoringDelivery;
-	return View::make('timetable')->withTimetable($timetable)->withStop($stopData)->withTitle('Timetable');
+	if(Redis::exists($stop)){
+		$timetable = json_decode(Redis::get($stop));
+		$cachedMessage = 'Retrieved from cache';
+	} else {
+		$url = 'http://nextbus.mxdata.co.uk/nextbuses/1.0/1';
+		$date =  date("Y-m-d\TH:i:s\Z");
+		$id = rand(100000, 999999);
+		$request = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+					<Siri version="1.0" xmlns="http://www.siri.org.uk/">
+					<ServiceRequest>
+					<RequestTimestamp>' . $date . '</RequestTimestamp>
+					<RequestorRef>' . Config::get('traveline.username') . '</RequestorRef>
+					<StopMonitoringRequest version="1.0">
+					<RequestTimestamp>' . $date . '</RequestTimestamp>
+					<MessageIdentifier>' . $id . '</MessageIdentifier>
+					<MonitoringRef>' . $stop . '</MonitoringRef>
+					</StopMonitoringRequest>
+					</ServiceRequest>
+					</Siri>';
+		$response = Httpful::post($url)->body($request)->authenticateWith(Config::get('traveline.username'), Config::get('traveline.password'))->sendsXml()->expectsXml()->send();
+		$timetable = $response->body->ServiceDelivery->StopMonitoringDelivery;
+		if (isset($timetable->MonitoredStopVisit[0]->MonitoredVehicleJourney->MonitoredCall->ExpectedDepartureTime)){
+			Redis::setex($stop, strtotime($timetable->MonitoredStopVisit[0]->MonitoredVehicleJourney->MonitoredCall->ExpectedDepartureTime) - time(), json_encode($timetable));
+		} elseif (isset($timetable->MonitoredStopVisit[0]->MonitoredVehicleJourney->MonitoredCall->AimedDepartureTime)) {
+			Redis::setex($stop, strtotime($timetable->MonitoredStopVisit[0]->MonitoredVehicleJourney->MonitoredCall->AimedDepartureTime) - time(), json_encode($timetable));
+		}
+		$cachedMessage = 'Retrieved from NextBuses API';
+	}
+	return View::make('timetable')->withTimetable($timetable)->withStop($stopData)->withTitle('Timetable')->withCached($cachedMessage);
 });
