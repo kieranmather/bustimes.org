@@ -13,6 +13,7 @@
 @section('content')
 <div class="row">
 	<div class="col-md-6">
+@if(isset($timetable))
 		<table class="table">
 			<thead>
 				<tr>
@@ -37,10 +38,17 @@
 		@endforeach
 			</tbody>
 		</table>
+@elseif(isset($error))
+		<div class="alert alert-warning">
+			{{$error}}
+		</div>
+@endif
 	</div>
+@if(isset($stop))
 	<div class="col-md-6">
 		<img class="img-responsive" src="https://maps.googleapis.com/maps/api/staticmap?sensor=false&amp;key=AIzaSyDPoTi3VIEkmiFhyMoprykJOIIn4w6lBgE&amp;size=500x500&amp;scale=2&amp;markers=color:red|{{$stop[0]->location['coordinates'][1]}},{{$stop[0]->location['coordinates'][0]}}" alt="Map">
 		<p class="text-muted">{{$cached}}</p>
 	</div>
+@endif
 </div>
 @stop
