@@ -35,15 +35,19 @@ Route::get('/location/{lat}/{lon}', array('as' => 'location', function($lat, $lo
 		'InUse' => TRUE,
 		]
         )->limit(10)->get();
-	$colours = array("black", "brown", "green", "purple", "yellow", "blue", "gray", "orange", "red", "white");
-	$letter = "A";
-	foreach ($stops as &$stop) {
-		$stop['colour'] = current($colours);
-		$stop['letter'] = $letter;
-		$letter++;
-		next($colours);
+	if (!$stops->isEmpty()){
+		$colours = array("black", "brown", "green", "purple", "yellow", "blue", "gray", "orange", "red", "white");
+		$letter = "A";
+		foreach ($stops as &$stop) {
+			$stop['colour'] = current($colours);
+			$stop['letter'] = $letter;
+			$letter++;
+			next($colours);
+		}
+		return View::make('stoplist')->withStops($stops)->withTitle('Stops');
+	} else {
+		return Redirect::to('/')->withMessage('We couldn\'t find any stops within 3km of your location.');
 	}
-	return View::make('stoplist')->withStops($stops)->withTitle('Stops');
 }))->where('lon', '[0-9.-]+')->where('lat', '[0-9.-]+');
 Route::get('/stop/{stop}', function($stop){
 	$stopData = Stop::where('id', '=', $stop)->get();
