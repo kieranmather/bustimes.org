@@ -32,11 +32,8 @@ Route::get('/location/{lat}/{lon}', array('as' => 'location', function($lat, $lo
 				'$maxDistance' => 3000
 				]
 			],
-		'$or' => [
-			['InUse' => TRUE],
-			['InUse' => [
-				'$exists' => FALSE
-				]]
+		'InUse' => [
+				'$ne' => FALSE
 			]
 		]
         )->limit(10)->get();
