@@ -15,7 +15,7 @@ Route::get('/', function() {
 	return View::make('homepage', ['title' => 'Home']);
 });
 Route::get('/location/', function() {
-	if (Input::has('lat') AND Input::has('lon')) {
+	if (Input::has('lat') && Input::has('lon')) {
 		return Redirect::to('/location/' . Input::get('lat') . '/' . Input::get('lon'));
 	} else {
 		return Redirect::to('/')->withMessage('An error occurred.');
