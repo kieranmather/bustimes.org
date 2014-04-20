@@ -32,7 +32,12 @@ Route::get('/location/{lat}/{lon}', array('as' => 'location', function($lat, $lo
 				'$maxDistance' => 3000
 				]
 			],
-		'InUse' => TRUE,
+		'$or' => [
+			['InUse' => TRUE],
+			['InUse' => [
+				'$exists' => FALSE
+				]]
+			]
 		]
         )->limit(10)->get();
 	if (!$stops->isEmpty()){
