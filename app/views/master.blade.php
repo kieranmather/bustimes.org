@@ -22,7 +22,7 @@
 
 		<hr />
 		<footer>
-			&copy; Kieran Mather 2014 <span class="text-muted">Contains public sector information licensed under the <a href="http://www.nationalarchives.gov.uk/doc/open-government-licence/version/2/">Open Government Licence v2.0</a></span> Built with Laravel <a href="http://www.bigv.io"><img src="{{asset('assets/bustimes.org/bigv.png')}}" alt="Powered by BigV"></a>
+			&copy; Kieran Mather 2014 <span clss="text-muted">Built with <a href="http://www.laravel.com">Laravel</a></span> <a href="http://www.bigv.io"><img src="{{asset('assets/bustimes.org/bigv.png')}}" alt="Powered by BigV"></a>
 		</footer>
 	</div>
 @yield('footer')

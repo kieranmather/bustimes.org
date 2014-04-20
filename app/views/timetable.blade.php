@@ -47,7 +47,7 @@
 @if(isset($stop))
 	<div class="col-md-6">
 		<img class="img-responsive" src="https://maps.googleapis.com/maps/api/staticmap?sensor=false&amp;key=AIzaSyDPoTi3VIEkmiFhyMoprykJOIIn4w6lBgE&amp;size=500x500&amp;scale=2&amp;markers=color:red|{{$stop[0]->location['coordinates'][1]}},{{$stop[0]->location['coordinates'][0]}}" alt="Map">
-		<p class="text-muted">{{$cached}}</p>
+		<p class="text-muted">{{$cached}} Public sector information from Traveline licensed under the Open Government Licence v2.0.</p>
 	</div>
 @endif
 </div>

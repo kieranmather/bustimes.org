@@ -56,7 +56,7 @@ Route::get('/stop/{stop}', function($stop){
 	if (!$stopData->isEmpty()){
 		if(Redis::exists($stop)){
 			$timetable = json_decode(Redis::get($stop));
-			$cachedMessage = 'Retrieved from cache';
+			$cachedMessage = 'Retrieved from cache.';
 		} else {
 			$url = 'http://nextbus.mxdata.co.uk/nextbuses/1.0/1';
 			$date =  date("Y-m-d\TH:i:s\Z");
@@ -80,7 +80,7 @@ Route::get('/stop/{stop}', function($stop){
 			} elseif (isset($timetable->MonitoredStopVisit[0]->MonitoredVehicleJourney->MonitoredCall->AimedDepartureTime)) {
 				Redis::setex($stop, strtotime($timetable->MonitoredStopVisit[0]->MonitoredVehicleJourney->MonitoredCall->AimedDepartureTime) - time(), json_encode($timetable));
 			}
-			$cachedMessage = 'Retrieved from NextBuses API';
+			$cachedMessage = 'Retrieved from NextBuses API.';
 		}
 		return View::make('timetable')->withTimetable($timetable)->withStop($stopData)->withTitle('Timetable')->withCached($cachedMessage);
 	} else {
