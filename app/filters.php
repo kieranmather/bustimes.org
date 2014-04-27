@@ -13,7 +13,9 @@
 
 App::before(function($request)
 {
-	//
+	if (!Request::is('regionblock')){
+		if (GeoIP::getLocation()['isoCode'] !== "GB" && GeoIP::getLocation()['isoCode'] !== "IE") return Redirect::to('/regionblock');
+	}
 });
 
 

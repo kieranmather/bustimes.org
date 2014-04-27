@@ -10,7 +10,9 @@
 | and give it the Closure to execute when that URI is requested.
 |
 */
-
+Route::get('/regionblock/', function() {
+	return 'This service is only accessible in the United Kingdom and Ireland (in case you\'re near the border and we get confused). If we have made an error I apologise but this is necessary to stop abuse.';
+});
 Route::get('/', function() {
 	return View::make('homepage', ['title' => 'Home']);
 });

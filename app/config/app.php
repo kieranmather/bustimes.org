@@ -120,6 +120,7 @@ return array(
 		'Illuminate\View\ViewServiceProvider',
 		'Illuminate\Workbench\WorkbenchServiceProvider',
 		'Jenssegers\Mongodb\MongodbServiceProvider',
+		'Torann\GeoIP\GeoIPServiceProvider',
 
 	),
 
@@ -187,7 +188,8 @@ return array(
 		'Validator'       => 'Illuminate\Support\Facades\Validator',
 		'View'            => 'Illuminate\Support\Facades\View',
 		'Httpful'         => '\Httpful\Request',
-		'Carbon'		  => '\Carbon\Carbon'
+		'Carbon'		  => '\Carbon\Carbon',
+		'GeoIP'			  => 'Torann\GeoIP\GeoIPFacade'
 
 	),
 
