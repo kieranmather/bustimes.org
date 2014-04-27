@@ -3,3 +3,5 @@
 ## Configuration
 
 Add your username/password in app/config/traveline.php
+
+Get [GeoLite2 City](http://dev.maxmind.com/geoip/geoip2/geolite2/) and stick it in /app/database/maxmind
