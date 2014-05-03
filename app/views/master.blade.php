@@ -4,6 +4,7 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, user-scalable=no">
+	<meta name="description" content="Live mobile-friendly bus timetables for any stop and operator in Great Britain">
 	<title>Bustimes.org - {{$title}}</title>
 	<link rel="stylesheet" href="{{asset('assets/bootstrap/css/bootstrap.min.css')}}">
 	<style type="text/css">
