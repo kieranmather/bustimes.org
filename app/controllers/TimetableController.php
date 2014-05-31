@@ -30,7 +30,6 @@ class TimetableController extends BaseController {
 				} elseif (isset($timetable->MonitoredStopVisit[0]->MonitoredVehicleJourney->MonitoredCall->AimedDepartureTime)) {
 					Redis::setex($stop, strtotime($timetable->MonitoredStopVisit[0]->MonitoredVehicleJourney->MonitoredCall->AimedDepartureTime) - time(), json_encode($timetable));
 				}
-				$cachedMessage = 'Retrieved from NextBuses API.';
 			}
 			return $timetable;
 		} else {
