@@ -59,14 +59,14 @@ class TimetableController extends BaseController {
 		}
 		if(Redis::exists($stop)) {
 			$timedata = json_decode(Redis::get($stop), TRUE);
-			$creditMessage = 'Retrieved from cache. Public sector information from Traveline licensed under the Open Government Licence v2.0.';
+			$creditMessage = 'Retrieved from cache. Public sector information from either Transport for Greater Manchester (stops beginning 180) or Traveline (all others). Contains Ordnance Survey data &copy; Crown copyright and database rights 2014';
 		} else if (Session::has('foreign')) {
 			return Redirect::to('/regionblock');
 		} else {
-			// Determine the data provider to use (NOT READY YET so we're just using Traveline). London (live) and Manchester (timetabled) planned.
+			// Determine the data provider to use
 			if (substr($stop, 0, 3) === '180'){
 				$timedata = TimetableController::getManchesterData($stop);
-				$creditMessage = 'Retrieved from planned timetables and may not take into account sudden service changes. Public sector information from Traveline licensed under the Open Government Licence v2.0.';
+				$creditMessage = 'Retrieved from planned timetables and may not take into account sudden service changes. Public sector information from Transport for Greater Manchester. Contains Ordnance Survey data &copy; Crown copyright and database rights 2014';
 			} else {
 				$timedata = TimetableController::getNationalData($stop);
 				$creditMessage = 'Retrieved from live data. Public sector information from Traveline licensed under the Open Government Licence v2.0.';
