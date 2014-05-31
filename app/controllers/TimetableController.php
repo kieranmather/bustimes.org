@@ -59,7 +59,7 @@ class TimetableController extends BaseController {
 		}
 		if(Redis::exists($stop)) {
 			$timedata = json_decode(Redis::get($stop), TRUE);
-			$creditMessage = 'Retrieved from cache. Public sector information from either Transport for Greater Manchester (stops beginning 180) or Traveline (all others). Contains Ordnance Survey data &copy; Crown copyright and database rights 2014';
+			$creditMessage = 'Retrieved from cache. Public sector information from Traveline licensed under the Open Government Licence v2.0.';
 		} else if (Session::has('foreign')) {
 			return Redirect::to('/regionblock');
 		} else {
