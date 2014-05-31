@@ -23,16 +23,13 @@
 				</tr>
 			</thead>
 			<tbody>
-		@foreach($timetable->MonitoredStopVisit as $time)
+
+		@foreach($timetable as $time)
 				<tr>
-					<td>{{{$time->MonitoredVehicleJourney->PublishedLineName}}}</td>
-					<td>{{{$time->MonitoredVehicleJourney->DirectionName}}}</td>
+					<td>{{{$time['BusName']}}}</td>
+					<td>{{{$time['BusHeading']}}}</td>
 					<td>
-					@if (isset($time->MonitoredVehicleJourney->MonitoredCall->ExpectedDepartureTime))
-					{{{date('H:i', strtotime($time->MonitoredVehicleJourney->MonitoredCall->ExpectedDepartureTime))}}}
-					@else
-					{{{date('H:i', strtotime($time->MonitoredVehicleJourney->MonitoredCall->AimedDepartureTime))}}}
-					@endif
+					{{{date('H:i', strtotime($time['ArrivalTime']))}}}
 					</td>
 				</tr>
 		@endforeach
