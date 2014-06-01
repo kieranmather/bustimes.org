@@ -10,8 +10,10 @@ function geoCode(){
 	geocodeRequest.geocode(request, function(results, status) {
 	  if (status == google.maps.GeocoderStatus.OK) {
         gotoUrl([results[0].geometry.location.lat(), results[0].geometry.location.lng()]);
+      } else if (status == google.maps.GeocoderStatus.ZERO_RESULTS){
+      	alert("We couldn't work out where the location you entered is. Try clarifying it (adding a city, for example) and giving it another go.")
       } else {
-        alert("Geocode was not successful for the following reason: " + status);
+        alert("Finding the location you entered didn't work due to an unknown error on our end. Try giving it another go.");
       }
 
 	});
