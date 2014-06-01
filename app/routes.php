@@ -53,4 +53,4 @@ Route::get('/location/{lat}/{lon}', array('as' => 'location', function($lat, $lo
 		return Redirect::to('/')->withMessage('We couldn\'t find any stops within 3km of your location.');
 	}
 }))->where('lon', '[0-9.-]+')->where('lat', '[0-9.-]+');
-Route::get('stop/{stop}', 'TimetableController@produceTimetable');
+Route::get('stop/{stop}/{force?}', 'TimetableController@produceTimetable');

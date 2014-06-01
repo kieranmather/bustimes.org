@@ -7,7 +7,7 @@
 			<li class="active">Timetable</li>
 		</ol>
 		<h4>Timetable</h4>
-		<p class="text-muted">for {{date('d/m/y')}} at {{date('H:i')}}</p>
+		<p class="text-muted">for {{date('d/m/y')}} at {{date('H:i')}}. @if(isset($scheduled) && $scheduled === TRUE) {{link_to('/stop/' . $stop[0]->id . '/live', 'Retry with live data?')}} @endif</p>
 @stop
 
 @section('content')
@@ -41,7 +41,7 @@
 		</div>
 @endif
 	</div>
-@if(isset($stop))
+@if(!isset($error))
 	<div class="col-md-6">
 		<img class="img-responsive" src="https://maps.googleapis.com/maps/api/staticmap?sensor=false&amp;key=AIzaSyDPoTi3VIEkmiFhyMoprykJOIIn4w6lBgE&amp;size=500x500&amp;scale=2&amp;markers=color:red|{{$stop[0]->location['coordinates'][1]}},{{$stop[0]->location['coordinates'][0]}}" alt="Map">
 		<p class="text-muted">{{$credit}}</p>

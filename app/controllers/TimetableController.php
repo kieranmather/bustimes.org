@@ -27,12 +27,12 @@ class TimetableController extends BaseController {
 			}
 			if (isset($standardTimetable[0]['ArrivalTime'])){
 				Redis::setex($stop, strtotime($standardTimetable[0]['ArrivalTime']) - time(), json_encode($standardTimetable));
+				return $standardTimetable;
 			} else {
-				return View::make('timetable')->withTitle('Timetable')->withError('No services found at this stop.');
+				return FALSE;
 			}
-			return $standardTimetable;
 		} else {
-			return false;
+			return FALSE;
 		}
 	}
 	private function getManchesterData($stop){
@@ -43,35 +43,47 @@ class TimetableController extends BaseController {
 			LEFT JOIN `gtfs`.`stop_times` ON `trips`.`trip_id` = `stop_times`.`trip_id` 
 			WHERE(( stop_id = ?) AND ( ' . strtolower(date('l')) . ' = 1) AND ( start_date <= 20140531) AND ( end_date >= 20140531))
 			ORDER BY departure_time', [$stop]);
-		$standardTimetable = array();
-		foreach($timetable as $trip){
-			if (strtotime($trip->departure_time) > time()){
-				$standardTimetable[] = ['BusName' => $trip->route_short_name, 'BusHeading' => $trip->route_long_name, 'ArrivalTime' => $trip->departure_time];
+		if (count($timetable) > 0) {
+			$standardTimetable = array();
+			foreach($timetable as $trip){
+				if (strtotime($trip->departure_time) > time()){
+					$standardTimetable[] = ['BusName' => $trip->route_short_name, 'BusHeading' => $trip->route_long_name, 'ArrivalTime' => $trip->departure_time];
+				}
 			}
+			return $standardTimetable;
+		} else {
+			return FALSE;
 		}
-		return $standardTimetable;
 	}
-	public function produceTimetable($stop){
+	public function produceTimetable($stop, $forceLive = NULL){
 		// Check for stop existence
 		$stopData = Stop::where('id', '=', $stop)->get();
+		$plannedData = FALSE;
 		if ($stopData->isEmpty()){
 			return View::make('timetable')->withTitle('Timetable')->withError('Invalid stop entered');
-		}
-		if(Redis::exists($stop)) {
+		} else if(Redis::exists($stop)) {
 			$timedata = json_decode(Redis::get($stop), TRUE);
 			$creditMessage = 'Retrieved from cache. Public sector information from Traveline licensed under the Open Government Licence v2.0.';
 		} else if (Session::has('foreign')) {
 			return Redirect::to('/regionblock');
 		} else {
 			// Determine the data provider to use
-			if (substr($stop, 0, 3) === '180'){
+			if (isset($forceLive)){
+				$timedata = TimetableController::getNationalData($stop);
+				$creditMessage = 'Retrieved from live data per user request. Public sector information from Traveline licensed under the Open Government Licence v2.0.';
+			} else if (substr($stop, 0, 3) === '180'){
 				$timedata = TimetableController::getManchesterData($stop);
 				$creditMessage = 'Retrieved from planned timetables and may not take into account sudden service changes. Public sector information from Transport for Greater Manchester. Contains Ordnance Survey data &copy; Crown copyright and database rights 2014';
+				$plannedData = TRUE;
 			} else {
 				$timedata = TimetableController::getNationalData($stop);
 				$creditMessage = 'Retrieved from live data. Public sector information from Traveline licensed under the Open Government Licence v2.0.';
 			}
 		}
-		return View::make('timetable')->withTimetable($timedata)->withStop($stopData)->withTitle('Timetable')->withCredit($creditMessage);
+		if ($timedata === FALSE){
+			return View::make('timetable')->withTitle('Timetable')->withScheduled($plannedData)->withStop($stopData)->withError('No services found at this stop.');
+		} else {
+			return View::make('timetable')->withTimetable($timedata)->withScheduled($plannedData)->withStop($stopData)->withTitle('Timetable')->withCredit($creditMessage);
+		}
 	}
 }
