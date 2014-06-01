@@ -102,7 +102,6 @@ class TimetableController extends BaseController {
 			} else if (substr($stop, 0, 3) === '490'){
 				$timedata = TimetableController::getLondonData($stop);
 				$creditMessage = 'Retrieved from live data. Data provided by Transport for London';
-				$plannedData = TRUE;
 			} else {
 				$timedata = TimetableController::getNationalData($stop);
 				$creditMessage = 'Retrieved from live data. Public sector information from Traveline licensed under the Open Government Licence v2.0.';
