@@ -65,10 +65,12 @@ class TimetableController extends BaseController {
 				foreach ($messages as $message) {
 					$message = json_decode($message, TRUE);
 					if ($message[0] === 1) {
-						$stoppingtimes[] = ['BusName' => $message[1], 'BusHeading' => $message[2], 'ArrivalTime' => $message[3]/1000];
+						//Hacky as shit
+						$stoppingtimes[$message[3]] = ['BusName' => $message[1], 'BusHeading' => $message[2], 'ArrivalTime' => $message[3]/1000];
 					}
 				}
 				if (!empty($stoppingtimes)){
+					ksort($stoppingtimes);
 					return $stoppingtimes;
 				} else {
 					return FALSE;
