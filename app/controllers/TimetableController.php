@@ -23,10 +23,10 @@ class TimetableController extends BaseController {
 			$timetable = $response->body->ServiceDelivery->StopMonitoringDelivery;
 			$standardTimetable = array();
 			foreach($timetable->MonitoredStopVisit as $trip){
-				$standardTimetable[] = ['BusName' => (string) $trip->MonitoredVehicleJourney->PublishedLineName, 'BusHeading' => (string) $trip->MonitoredVehicleJourney->DirectionName, 'ArrivalTime' => (string) $trip->MonitoredVehicleJourney->MonitoredCall->AimedDepartureTime];
+				$standardTimetable[] = ['BusName' => (string) $trip->MonitoredVehicleJourney->PublishedLineName, 'BusHeading' => (string) $trip->MonitoredVehicleJourney->DirectionName, 'ArrivalTime' => strtotime((string) $trip->MonitoredVehicleJourney->MonitoredCall->AimedDepartureTime)];
 			}
 			if (isset($standardTimetable[0]['ArrivalTime'])){
-				Redis::setex($stop, strtotime($standardTimetable[0]['ArrivalTime']) - time(), json_encode($standardTimetable));
+				Redis::setex($stop, $standardTimetable[0]['ArrivalTime'] - time(), json_encode($standardTimetable));
 				return $standardTimetable;
 			} else {
 				return FALSE;
@@ -47,13 +47,35 @@ class TimetableController extends BaseController {
 			$standardTimetable = array();
 			foreach($timetable as $trip){
 				if (strtotime($trip->departure_time) > time()){
-					$standardTimetable[] = ['BusName' => $trip->route_short_name, 'BusHeading' => $trip->route_long_name, 'ArrivalTime' => $trip->departure_time];
+					$standardTimetable[] = ['BusName' => $trip->route_short_name, 'BusHeading' => $trip->route_long_name, 'ArrivalTime' => strtotime($trip->departure_time)];
 				}
 			}
 			return $standardTimetable;
 		} else {
 			return FALSE;
 		}
+	}
+	private function getLondonData($stop){
+		$baseUrl = Config::get('traveline.tflurl');
+		$urlparameters = '?StopCode2=' . $stop . '&ReturnList=LineName,DestinationText,EstimatedTime';
+		$response = Httpful::get($baseUrl . $urlparameters)
+			->parsewith(function($body) {
+				$messages = explode("\n", $body);
+				//dd($messages);
+				foreach ($messages as $message) {
+					$message = json_decode($message, TRUE);
+					if ($message[0] === 1) {
+						$stoppingtimes[] = ['BusName' => $message[1], 'BusHeading' => $message[2], 'ArrivalTime' => $message[3]/1000];
+					}
+				}
+				if (!empty($stoppingtimes)){
+					return $stoppingtimes;
+				} else {
+					return FALSE;
+				}
+			})
+			->send();
+		return $response->body;
 	}
 	public function produceTimetable($stop, $forceLive = NULL){
 		// Check for stop existence
@@ -74,6 +96,10 @@ class TimetableController extends BaseController {
 			} else if (substr($stop, 0, 3) === '180'){
 				$timedata = TimetableController::getManchesterData($stop);
 				$creditMessage = 'Retrieved from planned timetables and may not take into account sudden service changes. Public sector information from Transport for Greater Manchester. Contains Ordnance Survey data &copy; Crown copyright and database rights 2014';
+				$plannedData = TRUE;
+			} else if (substr($stop, 0, 3) === '490'){
+				$timedata = TimetableController::getLondonData($stop);
+				$creditMessage = 'Retrieved from live data. Data provided by Transport for London';
 				$plannedData = TRUE;
 			} else {
 				$timedata = TimetableController::getNationalData($stop);

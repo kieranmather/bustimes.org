@@ -23,13 +23,12 @@
 				</tr>
 			</thead>
 			<tbody>
-
 		@foreach($timetable as $time)
 				<tr>
 					<td>{{{$time['BusName']}}}</td>
 					<td>{{{$time['BusHeading']}}}</td>
 					<td>
-					{{{date('H:i', strtotime($time['ArrivalTime']))}}}
+					{{{date('H:i', $time['ArrivalTime'])}}}
 					</td>
 				</tr>
 		@endforeach
