@@ -37,7 +37,7 @@ class TimetableController extends BaseController {
 	}
 	private function getManchesterData($stop){
 		$stopData = Stop::where('id', '=', $stop)->get();
-		$timetable = DB::connection('mysql')->select('SELECT `stop_times`.`departure_time`,`trips`.`trip_id`,`routes`.`route_short_name`,`routes`.`route_long_name` FROM calendar
+		$timetable = DB::connection('mysql')->select('SELECT `stop_times`.`departure_time`,`trips`.`trip_id`,`routes`.`route_short_name`,`trips`.`trip_headsign` FROM calendar
 			LEFT JOIN `gtfs`.`trips` ON `calendar`.`service_id` = `trips`.`service_id` 
 			LEFT JOIN `gtfs`.`routes` ON `trips`.`route_id` = `routes`.`route_id` 
 			LEFT JOIN `gtfs`.`stop_times` ON `trips`.`trip_id` = `stop_times`.`trip_id` 
@@ -47,7 +47,7 @@ class TimetableController extends BaseController {
 			$standardTimetable = array();
 			foreach($timetable as $trip){
 				if (strtotime($trip->departure_time) > time()){
-					$standardTimetable[] = ['BusName' => $trip->route_short_name, 'BusHeading' => $trip->route_long_name, 'ArrivalTime' => strtotime($trip->departure_time)];
+					$standardTimetable[] = ['BusName' => $trip->route_short_name, 'BusHeading' => $trip->trip_headsign, 'ArrivalTime' => strtotime($trip->departure_time)];
 				}
 			}
 			return $standardTimetable;
