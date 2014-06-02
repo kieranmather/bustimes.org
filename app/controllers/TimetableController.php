@@ -41,7 +41,7 @@ class TimetableController extends BaseController {
 			LEFT JOIN `gtfs`.`trips` ON `calendar`.`service_id` = `trips`.`service_id` 
 			LEFT JOIN `gtfs`.`routes` ON `trips`.`route_id` = `routes`.`route_id` 
 			LEFT JOIN `gtfs`.`stop_times` ON `trips`.`trip_id` = `stop_times`.`trip_id` 
-			WHERE(( stop_id = ?) AND ( ' . strtolower(date('l')) . ' = 1) AND ( start_date <= 20140531) AND ( end_date >= 20140531))
+			WHERE(( stop_id = ?) AND ( ' . strtolower(date('l')) . ' = 1) AND ( start_date <= ' . date('Ymd') . ') AND ( end_date >= ' . date('Ymd') . '))
 			ORDER BY departure_time', [$stop]);
 		if (count($timetable) > 0) {
 			$standardTimetable = array();
