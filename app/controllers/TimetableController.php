@@ -36,7 +36,6 @@ class TimetableController extends BaseController {
 		}
 	}
 	private function getManchesterData($stop){
-		$stopData = Stop::where('id', '=', $stop)->get();
 		$timetable = DB::connection('mysql')->table('calendar')
 			->select('stop_times.departure_time', 'trips.trip_id', 'routes.route_short_name', 'trips.trip_headsign')
 			->leftJoin('gtfs.trips', 'calendar.service_id', '=', 'trips.service_id')
