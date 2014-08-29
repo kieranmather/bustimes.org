@@ -65,7 +65,6 @@ class TimetableController extends BaseController {
 		$response = Httpful::get($baseUrl . $urlparameters)
 			->parsewith(function($body) {
 				$messages = explode("\n", $body);
-				//dd($messages);
 				foreach ($messages as $message) {
 					$message = json_decode($message, TRUE);
 					if ($message[0] === 1) {
