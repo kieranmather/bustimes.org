@@ -37,12 +37,17 @@ class TimetableController extends BaseController {
 	}
 	private function getManchesterData($stop){
 		$stopData = Stop::where('id', '=', $stop)->get();
-		$timetable = DB::connection('mysql')->select('SELECT `stop_times`.`departure_time`,`trips`.`trip_id`,`routes`.`route_short_name`,`trips`.`trip_headsign` FROM calendar
-			LEFT JOIN `gtfs`.`trips` ON `calendar`.`service_id` = `trips`.`service_id` 
-			LEFT JOIN `gtfs`.`routes` ON `trips`.`route_id` = `routes`.`route_id` 
-			LEFT JOIN `gtfs`.`stop_times` ON `trips`.`trip_id` = `stop_times`.`trip_id` 
-			WHERE(( stop_id = ?) AND ( ' . strtolower(date('l')) . ' = 1) AND ( start_date <= ' . date('Ymd') . ') AND ( end_date >= ' . date('Ymd') . '))
-			ORDER BY departure_time', [$stop]);
+		$timetable = DB::connection('mysql')->table('calendar')
+			->select('stop_times.departure_time', 'trips.trip_id', 'routes.route_short_name', 'trips.trip_headsign')
+			->leftJoin('gtfs.trips', 'calendar.service_id', '=', 'trips.service_id')
+			->leftJoin('gtfs.routes', 'trips.route_id', '=', 'routes.route_id')
+			->leftJoin('gtfs.stop_times', 'trips.trip_id', '=', 'stop_times.trip_id')
+			->where('stop_id', '=', $stop)
+			->where(strtolower(date('l')), '=', '1')
+			->where('start_date', '<=', date('Ymd'))
+			->where('end_date', '>=', date('Ymd'))
+			->orderBy('departure_time', 'asc')
+			->get();
 		if (count($timetable) > 0) {
 			$standardTimetable = array();
 			foreach($timetable as $trip){
