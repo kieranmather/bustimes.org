@@ -4,7 +4,7 @@ class TimetableController extends BaseController {
 	private function getNationalData($stop){
 		$stopData = Stop::where('id', '=', $stop)->get();
 		if (!$stopData->isEmpty()){
-			$url = 'http://nextbus.mxdata.co.uk/nextbuses/1.0/1';
+			$url = 'http://nextbus.mxdata.co.uk/nextbuses/beta';
 			$date =  date("Y-m-d\TH:i:s\Z");
 			$id = rand(100000, 999999);
 			$request = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
