@@ -5,7 +5,8 @@
 	"license": "MIT",
 	"require": {
 		"laravel/framework": "4.1.*",
-        "jenssegers/mongodb": "*",
+	        "jenssegers/mongodb": "*",
+		"jenssegers/agent": "*",
 		"nategood/httpful": "*",
 		"nesbot/Carbon": "*",
 		"torann/geoip": "0.1.*@dev"

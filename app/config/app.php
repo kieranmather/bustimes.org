@@ -121,7 +121,7 @@ return array(
 		'Illuminate\Workbench\WorkbenchServiceProvider',
 		'Jenssegers\Mongodb\MongodbServiceProvider',
 		'Torann\GeoIP\GeoIPServiceProvider',
-
+		'Jenssegers\Agent\AgentServiceProvider',
 	),
 
 	/*
@@ -189,8 +189,8 @@ return array(
 		'View'            => 'Illuminate\Support\Facades\View',
 		'Httpful'         => '\Httpful\Request',
 		'Carbon'		  => '\Carbon\Carbon',
-		'GeoIP'			  => 'Torann\GeoIP\GeoIPFacade'
-
+		'GeoIP'			  => 'Torann\GeoIP\GeoIPFacade',
+		'Agent'            => 'Jenssegers\Agent\Facades\Agent'
 	),
 
 );
