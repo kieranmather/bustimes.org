@@ -10,9 +10,6 @@
 | and give it the Closure to execute when that URI is requested.
 |
 */
-Route::get('/regionblock/', function() {
-	return 'This service is only accessible in the United Kingdom and Ireland (in case you\'re near the border and we get confused). You appear to be in ' . GeoIP::getLocation()['country'] . '. If you believe you are in the UK or Ireland, check that you have not travelled to a foreign country by mistake, your ISP is not involved in some dodgy tax <del>evasion</del> planning scheme and you\'re not roaming on foreign cell towers before e-mailing me at kieran.mather [at] gmail.com.';
-});
 Route::get('/', function() {
 	return View::make('homepage', ['title' => 'Home']);
 });
