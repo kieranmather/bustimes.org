@@ -23,10 +23,16 @@ class TimetableController extends BaseController {
 			$timetable = $response->body->ServiceDelivery->StopMonitoringDelivery;
 			$standardTimetable = array();
 			foreach($timetable->MonitoredStopVisit as $trip){
-				$standardTimetable[] = ['BusName' => (string) $trip->MonitoredVehicleJourney->PublishedLineName, 'BusHeading' => (string) $trip->MonitoredVehicleJourney->DirectionName, 'ArrivalTime' => strtotime((string) $trip->MonitoredVehicleJourney->MonitoredCall->AimedDepartureTime)];
+				if (isset($trip->MonitoredVehicleJourney->MonitoredCall->ExpectedDepartureTime)){
+					$standardTimetable[] = ['BusName' => (string) $trip->MonitoredVehicleJourney->PublishedLineName, 'BusHeading' => (string) $trip->MonitoredVehicleJourney->DirectionName, 'ArrivalTime' => strtotime((string) $trip->MonitoredVehicleJourney->MonitoredCall->ExpectedDepartureTime)];
+				} else {
+					$standardTimetable[] = ['BusName' => (string) $trip->MonitoredVehicleJourney->PublishedLineName, 'BusHeading' => (string) $trip->MonitoredVehicleJourney->DirectionName, 'ArrivalTime' => strtotime((string) $trip->MonitoredVehicleJourney->MonitoredCall->AimedDepartureTime)];
+				}
 			}
 			if (isset($standardTimetable[0]['ArrivalTime'])){
-				Redis::setex($stop, $standardTimetable[0]['ArrivalTime'] - time(), json_encode($standardTimetable));
+				if ( $standardTimetable[0]['ArrivalTime'] - time() > 0){ //cover for errors in data or redis gets angry at a negative expiry
+					Redis::setex($stop, $standardTimetable[0]['ArrivalTime'] - time(), json_encode($standardTimetable));
+				}
 				return $standardTimetable;
 			} else {
 				return FALSE;
