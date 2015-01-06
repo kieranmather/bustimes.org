@@ -13,12 +13,7 @@
 
 App::before(function($request)
 {
-	if (Request::is('/')) {
-		if (GeoIP::getLocation()['isoCode'] !== "GB" && GeoIP::getLocation()['isoCode'] !== "IE" && !Agent::isRobot()) Session::flash('message', 'As you are not located in the United Kingdom or Ireland, you may not be able to look up timetables for most stops.');
-	}
-	else if (Request::is('stop/*')){
-		if (GeoIP::getLocation()['isoCode'] !== "GB" && GeoIP::getLocation()['isoCode'] !== "IE") Session::flash('foreign', TRUE);
-	}
+	//
 });
 
 
