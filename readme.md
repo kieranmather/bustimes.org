@@ -2,6 +2,6 @@
 
 ## Configuration
 
-Add your username/password in app/config/traveline.php
+Add your username/password in app/config/traveline.php and add the base URL of TfL Countdown in there too. `composer install` and follow the error messages to get it working.
 
-Get [GeoLite2 City](http://dev.maxmind.com/geoip/geoip2/geolite2/) and stick it in /app/database/maxmind
+GTFS (currently only for TfGM) is stored in MySQL for relational goodness and NaPTAN is stored in Mongo because MongoDB is webscale. Redis is used to cache non-free or limited API requests like NextBuses. It's designed to be reasonably flexible due to the dissimilarity of the many transport APIs. Provided you can extract a timestamp, a heading and a name of a service you could integrate an API or dataset easily.
