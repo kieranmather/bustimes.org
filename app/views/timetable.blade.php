@@ -42,7 +42,7 @@
 	</div>
 @if(!isset($error))
 	<div class="col-md-6">
-		<img class="img-responsive" src="https://maps.googleapis.com/maps/api/staticmap?sensor=false&amp;key=AIzaSyDPoTi3VIEkmiFhyMoprykJOIIn4w6lBgE&amp;size=500x500&amp;scale=2&amp;markers=color:red|{{$stop[0]->location['coordinates'][1]}},{{$stop[0]->location['coordinates'][0]}}" alt="Map">
+		<img class="img-responsive" src="https://maps.googleapis.com/maps/api/staticmap?sensor=false&amp;key=AIzaSyDPoTi3VIEkmiFhyMoprykJOIIn4w6lBgE&amp;size=500x500&amp;scale=2&amp;markers=color:red|{{{$stop[0]->lat}}},{{{$stop[0]->lon}}}" alt="Map">
 		<p class="text-muted">{{$credit}}</p>
 	</div>
 @endif

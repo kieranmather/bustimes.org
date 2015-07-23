@@ -90,7 +90,10 @@ class TimetableController extends BaseController {
 	}
 	public function produceTimetable($stop, $forceLive = NULL){
 		// Check for stop existence
-		$stopData = Stop::where('id', '=', $stop)->get();
+		$stopData = Stop::select(DB::raw('*, ST_AsText(location) AS location'))->where('id', '=', $stop)->get();
+		$coords = explode(' ', $stopData[0]['location']);
+		$stopData[0]['lon'] = filter_var($coords[0], FILTER_SANITIZE_NUMBER_FLOAT, ['flags' => FILTER_FLAG_ALLOW_FRACTION]);
+		$stopData[0]['lat'] = filter_var($coords[1], FILTER_SANITIZE_NUMBER_FLOAT, ['flags' => FILTER_FLAG_ALLOW_FRACTION]);
 		$plannedData = FALSE;
 		if ($stopData->isEmpty()){
 			return View::make('timetable')->withTitle('Timetable')->withError('Invalid stop entered');
@@ -101,7 +104,7 @@ class TimetableController extends BaseController {
 			return Redirect::to('/regionblock');
 		} else {
 			// Determine the data provider to use
-			if (isset($forceLive)){
+			/*if (isset($forceLive)){
 				$timedata = TimetableController::getNationalData($stop);
 				$creditMessage = 'Retrieved from live data per user request. Public sector information from Traveline licensed under the Open Government Licence v2.0.';
 			} else if (substr($stop, 0, 3) === '180'){
@@ -111,10 +114,10 @@ class TimetableController extends BaseController {
 			} else if (substr($stop, 0, 3) === '490'){
 				$timedata = TimetableController::getLondonData($stop);
 				$creditMessage = 'Retrieved from live data. Data provided by Transport for London';
-			} else {
+			} else {*/
 				$timedata = TimetableController::getNationalData($stop);
 				$creditMessage = 'Retrieved from live data. Public sector information from Traveline licensed under the Open Government Licence v2.0.';
-			}
+			//}
 		}
 		if ($timedata === FALSE){
 			return View::make('timetable')->withTitle('Timetable')->withScheduled($plannedData)->withStop($stopData)->withError('No services found at this stop.');

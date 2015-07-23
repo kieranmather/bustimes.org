@@ -1,7 +1,7 @@
 <?php
 
-use Jenssegers\Mongodb\Model as Eloquent;
 
 class Stop extends Eloquent{
+	protected $table = 'naptan';
 	public $timestamps = false;
 }

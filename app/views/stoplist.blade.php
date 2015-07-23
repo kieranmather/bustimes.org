@@ -26,7 +26,7 @@
 		</table>
 	</div>
 	<div class="col-md-6">
-		<img class="img-responsive" alt="Map" src="https://maps.googleapis.com/maps/api/staticmap?sensor=false&amp;key=AIzaSyDPoTi3VIEkmiFhyMoprykJOIIn4w6lBgE&amp;size=500x500&amp;scale=2 @foreach($stops as $stop)&amp;markers=label:{{{$stop->letter}}}|color:{{{$stop->colour}}}|{{{$stop->location['coordinates'][1]}}},{{{$stop->location['coordinates'][0]}}}@endforeach ">
+		<img class="img-responsive" alt="Map" src="https://maps.googleapis.com/maps/api/staticmap?sensor=false&amp;key=AIzaSyDPoTi3VIEkmiFhyMoprykJOIIn4w6lBgE&amp;size=500x500&amp;scale=2 @foreach($stops as $stop)&amp;markers=label:{{{$stop->letter}}}|color:{{{$stop->colour}}}|{{{$stop->lat}}},{{{$stop->lon}}}@endforeach ">
 		<p class="text-muted">Public sector information from the Department for Transport licensed under the Open Government Licence v2.0.</p>
 	</div>
 </div>
