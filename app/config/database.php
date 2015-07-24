@@ -45,30 +45,6 @@ return array(
 	*/
 
 	'connections' => array(
-		'mongodb' => array(
-		    'driver'   => 'mongodb',
-		    'host'     => 'localhost',
-		    'port'     => 27017,
-		    'username' => '',
-		    'password' => '',
-		    'database' => 'bustimes'
-		),
-		'sqlite' => array(
-			'driver'   => 'sqlite',
-			'database' => __DIR__.'/../database/production.sqlite',
-			'prefix'   => '',
-		),
-
-		'mysql' => array(
-			'driver'    => 'mysql',
-			'host'      => 'localhost',
-			'database'  => 'database',
-			'username'  => 'root',
-			'password'  => '',
-			'charset'   => 'utf8',
-			'collation' => 'utf8_unicode_ci',
-			'prefix'    => '',
-		),
 
 		'pgsql' => array(
 			'driver'   => 'pgsql',
@@ -80,15 +56,17 @@ return array(
 			'prefix'   => '',
 			'schema'   => 'public',
 		),
-
-		'sqlsrv' => array(
-			'driver'   => 'sqlsrv',
+		'pgsql2' => array(
+			'driver'   => 'pgsql',
 			'host'     => 'localhost',
-			'database' => 'database',
-			'username' => 'root',
+			'database' => 'gtfs',
+			'username' => 'bustimes',
 			'password' => '',
+			'charset'  => 'utf8',
 			'prefix'   => '',
+			'schema'   => 'manchester',
 		),
+
 
 	),
 
