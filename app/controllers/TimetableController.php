@@ -60,7 +60,11 @@ class TimetableController extends BaseController {
 					$standardTimetable[] = ['BusName' => $trip->route_short_name, 'BusHeading' => $trip->trip_headsign, 'ArrivalTime' => strtotime($trip->departure_time)];
 				}
 			}
-			return $standardTimetable;
+			if (count($standardTimetable) > 0){
+				return $standardTimetable;
+			} else {
+				return FALSE;
+			}
 		} else {
 			return FALSE;
 		}
@@ -91,13 +95,16 @@ class TimetableController extends BaseController {
 	public function produceTimetable($stop, $forceLive = NULL){
 		// Check for stop existence
 		$stopData = Stop::select(DB::raw('*, ST_AsText(location) AS location'))->where('id', '=', $stop)->get();
-		$coords = explode(' ', $stopData[0]['location']);
-		$stopData[0]['lon'] = filter_var($coords[0], FILTER_SANITIZE_NUMBER_FLOAT, ['flags' => FILTER_FLAG_ALLOW_FRACTION]);
-		$stopData[0]['lat'] = filter_var($coords[1], FILTER_SANITIZE_NUMBER_FLOAT, ['flags' => FILTER_FLAG_ALLOW_FRACTION]);
 		$plannedData = FALSE;
 		if ($stopData->isEmpty()){
 			return View::make('timetable')->withTitle('Timetable')->withError('Invalid stop entered');
-		} else if(Redis::exists($stop)) {
+		} else {
+			$stopData = Stop::select(DB::raw('*, ST_AsText(location) AS location'))->where('id', '=', $stop)->get();
+			$coords = explode(' ', $stopData[0]['location']);
+			$stopData[0]['lon'] = filter_var($coords[0], FILTER_SANITIZE_NUMBER_FLOAT, ['flags' => FILTER_FLAG_ALLOW_FRACTION]);
+			$stopData[0]['lat'] = filter_var($coords[1], FILTER_SANITIZE_NUMBER_FLOAT, ['flags' => FILTER_FLAG_ALLOW_FRACTION]);
+		}
+		if(Redis::exists($stop)){
 			$timedata = json_decode(Redis::get($stop), TRUE);
 			$creditMessage = 'Retrieved from cache. Public sector information from Traveline licensed under the Open Government Licence v2.0.';
 		} else if (Session::has('foreign')) {
@@ -119,6 +126,7 @@ class TimetableController extends BaseController {
 				$creditMessage = 'Retrieved from live data. Public sector information from Traveline licensed under the Open Government Licence v2.0.';
 			}
 		}
+		// Extract the location info
 		if ($timedata === FALSE){
 			return View::make('timetable')->withTitle('Timetable')->withScheduled($plannedData)->withStop($stopData)->withError('No services found at this stop.');
 		} else {
