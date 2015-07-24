@@ -21,23 +21,9 @@ Route::get('/location/', function() {
 	}
 });
 Route::get('/location/{lat}/{lon}', array('as' => 'location', function($lat, $lon) {
-	/*$stops = Stop::whereRaw([
-		'location' => [
-			'$near' => [
-				'$geometry' => [
-					"type" => "Point",
-					"coordinates" => [floatval($lon), floatval($lat)]
-					],
-				'$maxDistance' => 3000
-				]
-			],
-		'InUse' => [
-				'$ne' => FALSE
-			]
-		]
-        )->limit(10)->get();*/
 	$stops = Stop::select(
 		DB::raw('*, ST_AsText(location) AS location'))
+		->where('inuse', '=', true)
 		->whereRaw('ST_DWithin(location, ST_GeographyFromText(\'SRID=4326;POINT(' . floatval($lon) . ' ' . floatval($lat) . ')\'), 1000)')
 		->orderByRaw('ST_Distance(location, ST_GeographyFromText(\'SRID=4326;POINT(' . floatval($lon) . ' ' . floatval($lat) . ')\'))')
 		->limit(10)
