@@ -21,21 +21,13 @@ Route::get('/location/', function() {
 	}
 });
 Route::get('/location/{lat}/{lon}', array('as' => 'location', function($lat, $lon) {
-	$stops = Stop::whereRaw([
-		'location' => [
-			'$near' => [
-				'$geometry' => [
-					"type" => "Point",
-					"coordinates" => [floatval($lon), floatval($lat)]
-					],
-				'$maxDistance' => 3000
-				]
-			],
-		'InUse' => [
-				'$ne' => FALSE
-			]
-		]
-        )->limit(10)->get();
+	$stops = Stop::select(
+		DB::raw('*, ST_AsText(location) AS location'))
+		->where('inuse', '=', true)
+		->whereRaw('ST_DWithin(location, ST_GeographyFromText(\'SRID=4326;POINT(' . floatval($lon) . ' ' . floatval($lat) . ')\'), 1000)')
+		->orderByRaw('ST_Distance(location, ST_GeographyFromText(\'SRID=4326;POINT(' . floatval($lon) . ' ' . floatval($lat) . ')\'))')
+		->limit(10)
+		->get();
 	if (!$stops->isEmpty()){
 		$colours = array("black", "brown", "green", "purple", "yellow", "blue", "gray", "orange", "red", "white");
 		$letter = "A";
@@ -44,6 +36,9 @@ Route::get('/location/{lat}/{lon}', array('as' => 'location', function($lat, $lo
 			$stop['letter'] = $letter;
 			$letter++;
 			next($colours);
+			$coords = explode(' ', $stop['location']);
+			$stop['lon'] = filter_var($coords[0], FILTER_SANITIZE_NUMBER_FLOAT, ['flags' => FILTER_FLAG_ALLOW_FRACTION]);
+			$stop['lat'] = filter_var($coords[1], FILTER_SANITIZE_NUMBER_FLOAT, ['flags' => FILTER_FLAG_ALLOW_FRACTION]);
 		}
 		return View::make('stoplist')->withStops($stops)->withTitle('Stops');
 	} else {

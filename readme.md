@@ -4,4 +4,6 @@
 
 Add your username/password in app/config/traveline.php and add the base URL of TfL Countdown in there too. `composer install` and follow the error messages to get it working.
 
-GTFS (currently only for TfGM) is stored in MySQL for relational goodness and NaPTAN is stored in Mongo because MongoDB is webscale. Redis is used to cache non-free or limited API requests like NextBuses. It's designed to be reasonably flexible due to the dissimilarity of the many transport APIs. Provided you can extract a timestamp, a heading and a name of a service you could integrate an API or dataset easily.
+## Info
+
+Both NaPTAN and GTFS are stored in Postgres. Redis is used as a cache for the Traveline API as it's slow (2500ms vs 100ms for a GTFS query). London's API is lovely and needs no faffing about. NaPTAN is filtered using the national unused bus stops database- all stopping points are contained within the database but (in theory) only bus stops will be marked as `inuse`.
