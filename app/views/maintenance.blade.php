@@ -12,7 +12,7 @@
 				<div class="alert alert-warning">
 					<h3>Maintenance</h3>
 					<p>The site's down for maintenance at the moment. We'll be really quick but you can call Traveline on 0871 200 22 33* if you need information now.</p>
-					<p><small>*Calls cost 10p per minute plus network extras.</small></p>
+					<p><small>*Calls cost 12p per minute plus your phone company's access charge.</small></p>
 				</div>
 			</div>
 		</div>
