@@ -42,11 +42,11 @@ class TimetableController extends BaseController {
 		}
 	}
 	private function getManchesterData($stop){
-		$timetable = DB::connection('mysql')->table('calendar')
+		$timetable = DB::connection('pgsql2')->table('manchester.calendar')
 			->select('stop_times.departure_time', 'trips.trip_id', 'routes.route_short_name', 'trips.trip_headsign')
-			->leftJoin('gtfs.trips', 'calendar.service_id', '=', 'trips.service_id')
-			->leftJoin('gtfs.routes', 'trips.route_id', '=', 'routes.route_id')
-			->leftJoin('gtfs.stop_times', 'trips.trip_id', '=', 'stop_times.trip_id')
+			->leftJoin('manchester.trips', 'calendar.service_id', '=', 'trips.service_id')
+			->leftJoin('manchester.routes', 'trips.route_id', '=', 'routes.route_id')
+			->leftJoin('manchester.stop_times', 'trips.trip_id', '=', 'stop_times.trip_id')
 			->where('stop_id', '=', $stop)
 			->where(strtolower(date('l')), '=', '1')
 			->where('start_date', '<=', date('Ymd'))
@@ -104,7 +104,7 @@ class TimetableController extends BaseController {
 			return Redirect::to('/regionblock');
 		} else {
 			// Determine the data provider to use
-			/*if (isset($forceLive)){
+			if (isset($forceLive)){
 				$timedata = TimetableController::getNationalData($stop);
 				$creditMessage = 'Retrieved from live data per user request. Public sector information from Traveline licensed under the Open Government Licence v2.0.';
 			} else if (substr($stop, 0, 3) === '180'){
@@ -114,10 +114,10 @@ class TimetableController extends BaseController {
 			} else if (substr($stop, 0, 3) === '490'){
 				$timedata = TimetableController::getLondonData($stop);
 				$creditMessage = 'Retrieved from live data. Data provided by Transport for London';
-			} else {*/
+			} else {
 				$timedata = TimetableController::getNationalData($stop);
 				$creditMessage = 'Retrieved from live data. Public sector information from Traveline licensed under the Open Government Licence v2.0.';
-			//}
+			}
 		}
 		if ($timedata === FALSE){
 			return View::make('timetable')->withTitle('Timetable')->withScheduled($plannedData)->withStop($stopData)->withError('No services found at this stop.');
