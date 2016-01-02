@@ -23,7 +23,7 @@
 
 		<hr />
 		<footer>
-			&copy; Kieran Mather 2015 <span class="text-muted">Built with <a href="http://www.laravel.com">Laravel</a></span> Source code on <a href="https://www.github.com/kieranmather/bustimes.org">Github</a> <a href="http://www.bigv.io"><img src="{{asset('assets/bustimes.org/bigv.png')}}" alt="Powered by BigV"></a>
+			&copy; Kieran Mather <span class="text-muted">Built with <a href="http://www.laravel.com">Laravel</a></span> Source code on <a href="https://www.github.com/kieranmather/bustimes.org">Github</a> <a href="http://www.bigv.io"><img src="{{asset('assets/bustimes.org/bigv.png')}}" alt="Powered by BigV"></a>
 		</footer>
 	</div>
 @yield('footer')
